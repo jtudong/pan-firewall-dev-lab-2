@@ -16,7 +16,7 @@ parameters:
   - name: azureServicePrincipal
     displayName: Azure Service Principal
     type: string
-    default:  pan-firewall-dev-lab
+    default:  pan-firewall-dev-lab-2
 
 variables:
 - group: firewall-vars-1
