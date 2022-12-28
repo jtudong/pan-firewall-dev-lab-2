@@ -9,7 +9,7 @@
             "value": "westus3"
         },
         "subnetPrefix": {
-            "value": "firewalltest"
+            "value": "fwtest"
         }
     }
 }
