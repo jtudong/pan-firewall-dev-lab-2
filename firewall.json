@@ -2,6 +2,36 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "ASSIGN THE ADMIN PASSWORD AT RUNTIME -- DO NOT SAVE IN TEMPLATE"
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "sfcadmin"
+        },
+        "bootstrapStorageAccount": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "bootstrapAccessKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "ASSIGN THE ACCESS KEY AT RUNTIME -- DO NOT SAVE IN TEMPLATE"
+            }
+        },
+        "bootstrapFileShare": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "deployFirewall": {
+            "type": "bool",
+            "defaultValue": true
+        },
         "environment": {
             "type": "string",
             "defaultValue": "dev",
@@ -11,9 +41,9 @@
                 "sandbox"
             ]
         },
-        "existingVNETName": {
+        "fwName": {
             "type": "string",
-            "defaultValue": "sfc01-wu3-dev-vnet"
+            "defaultValue": ""
         },
         "location": {
             "type": "string",
@@ -22,6 +52,44 @@
                 "westus",
                 "westus2",
                 "westus3"
+            ]
+        },
+        "paSku": {
+            "type": "string",
+            "defaultValue": "byol",
+            "allowedValues": [
+                "byol",
+                "bundle1",
+                "bundle2",
+                "vmseries-flex"
+            ]
+        },
+        "paVersion": {
+            "type": "string",
+            "allowedValues": [
+                "9.0.9",
+                "9.1.0",
+                "10.0.9",
+                "10.1.6",
+                "latest"
+            ],
+            "defaultValue": "9.1.0"
+        },
+        "paOffer": {
+            "type": "string",
+            "defaultValue": "vmseries1",
+            "allowedValues": [
+                "vmseries1",
+                "vmseries-flex"
+            ]
+        },
+        "paVmSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS3_v2",
+            "allowedValues": [
+                "Standard_DS3_v2",
+                "Standard_DS4_v2",
+                "Standard_DS5_v2"
             ]
         },
         "subnetPrefix": {
@@ -40,7 +108,8 @@
         "mgmtPrefix": "[concat(parameters('subnetPrefix'),'-management')]",
         "trustPrefix": "[concat(parameters('subnetPrefix'),'-trusted')]",
         "uniqueId": "[uniqueString(resourceGroup().id)]",
-        "untrustPrefix": "[concat(parameters('subnetPrefix'),'-untrusted')]"
+        "untrustPrefix": "[concat(parameters('subnetPrefix'),'-untrusted')]",
+        "customData": "[concat('storage-account=',parameters('bootstrapStorageAccount'),',access-key=',parameters('bootstrapAccessKey'),',file-share=',parameters('bootstrapFileShare'),',share-directory=')]"
     },
     "resources": [
         {
@@ -487,6 +556,74 @@
                     }
                 ],
                 "enableIPForwarding": true
+            }
+        },
+        {
+            // create the firewall
+            "name": "[parameters('fwName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-03-01",
+            "condition": "[parameters('deployFirewall')]",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('mgmtPrefix'),'-nic'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('trustPrefix'),'-nic'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('untrustPrefix'),'-nic'))]"
+            ],
+            "plan": {
+                "name": "[parameters('paSku')]",
+                "product": "[parameters('paOffer')]",
+                "publisher": "paloaltonetworks"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('paVmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('fwName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]" ,
+                    "customData": "[base64(variables('customData'))]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "paloaltonetworks",
+                        "offer": "[parameters('paOffer')]",
+                        "sku": "[parameters('paSku')]",
+                        "version": "[parameters('paVersion')]"
+                    },
+                    "osDisk": {
+                        "name": "[concat(parameters('fwName'),'-OSDisk')]",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('mgmtPrefix'),'-nic'))]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('untrustPrefix'),'-nic'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('trustPrefix'),'-nic'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                }
             }
         }
     ],

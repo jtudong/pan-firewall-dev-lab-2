@@ -15,4 +15,4 @@ watch 'az group list -o table | grep fwlab'
 az group create -l westus3 -n sfc-fwlab-sandbox-rg
 az deployment group create -c -g sfc-fwlab-sandbox-rg -f firewall.json -p firewall.parameters.json -n fwlab-
 
-git switch master&&git merge dev&&git push&&git push github&&git switch dev
+git push github&&git switch master&&git merge dev&&git push&&git push github&&git switch dev

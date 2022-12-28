@@ -60,6 +60,7 @@ stages:
   jobs:
     - job: deployTemplate
       steps:
+        - bash: echo 'Deploying the firewall'
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
             deploymentScope: 'Resource Group'
@@ -70,5 +71,5 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: firewall.json
             csmParametersFile: firewall.parameters.json
-            overrideParameters: #-adminPassword $(adminPassword) -bootstrapAccessKey $(bootstrapAccessKey)
+            overrideParameters: -adminPassword $(adminPassword) -bootstrapAccessKey $(bootstrapAccessKey) -deployFirewall $(deployFirewall)
             deploymentMode: 'Incremental'
