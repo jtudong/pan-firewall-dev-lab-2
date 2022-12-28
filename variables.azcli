@@ -1,7 +1,7 @@
 az pipelines variable-group create \
 --name firewall-vars-1 \
 --project pan-firewall-dev-lab-2 \
---variables subnetPrefix=fwtest \
+--variables subnetPrefix=fwlab\
 environment=sandbox \
 location=westus3 \
 deployFirewall=true \
@@ -11,4 +11,4 @@ deployFirewall=true \
 az pipelines variable-group list --project pan-firewall-dev-lab-2 -o table
 
 # update subnetPrefix
-az pipelines variable-group update --group-id 3 --name subnetPrefix --project pan-firewall-dev-lab-2 --value fwtest
+az pipelines variable-group variable update --group-id 4 --name subnetPrefix --project pan-firewall-dev-lab-2 --value fwlab
