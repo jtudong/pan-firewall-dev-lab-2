@@ -9,3 +9,6 @@ deployFirewall=true \
 --output yaml
 
 az pipelines variable-group list --project pan-firewall-dev-lab-2 -o table
+
+# update subnetPrefix
+az pipelines variable-group update --group-id 3 --name subnetPrefix --project pan-firewall-dev-lab-2 --value fwtest
