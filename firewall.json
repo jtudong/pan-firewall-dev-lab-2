@@ -403,6 +403,91 @@
                     }
                 ]
             }
+        },
+        {
+            // create the Management NIC
+            "name": "[concat(variables('mgmtPrefix'),'-nic')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('mgmtPrefix'),'-',parameters('environment'),'-pip'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[variables('mgmtPrefix')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.18.4.4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'),variables('mgmtPrefix'))]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('mgmtPrefix'),'-',parameters('environment'),'-pip'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            // create the Untrusted NIC
+            "name": "[concat(variables('untrustPrefix'),'-nic')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('untrustPrefix'),'-',parameters('environment'),'-pip'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[variables('untrustPrefix')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.18.2.4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'),variables('untrustPrefix'))]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('untrustPrefix'),'-',parameters('environment'),'-pip'))]"
+                            }
+                        }
+                    }
+                ],
+                "enableIPForwarding": true
+            }
+        },
+        {
+            // create the Trusted NIC
+            "name": "[concat(variables('trustPrefix'),'-nic')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[variables('trustPrefix')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "10.18.3.4",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('subnetPrefix'),'-',parameters('environment'),'-vnet'),variables('trustPrefix'))]"
+                            }
+                        }
+                    }
+                ],
+                "enableIPForwarding": true
+            }
         }
     ],
     "outputs": {}
