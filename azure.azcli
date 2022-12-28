@@ -1,13 +1,13 @@
 az group list -o table | grep firewalltest
 
 # detach the nsg and route-table
-az network vnet subnet update --route-table ""  --nsg "" -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-management 
-az network vnet subnet update --route-table ""  --nsg "" -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-trusted 
-az network vnet subnet update --route-table ""  --nsg "" -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-untrusted
+az network vnet subnet update --route-table ""  --nsg "" -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-management 
+az network vnet subnet update --route-table ""  --nsg "" -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-trusted 
+az network vnet subnet update --route-table ""  --nsg "" -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-untrusted
 
-az network vnet subnet delete -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-management --no-wait
-az network vnet subnet delete -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-trusted --no-wait
-az network vnet subnet delete -g sfc-network-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-untrusted --no-wait
+az network vnet subnet delete -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-management --no-wait
+az network vnet subnet delete -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-trusted --no-wait
+az network vnet subnet delete -g sfc-firewalltest-dev-rg --vnet-name sfc01-wu3-dev-vnet -n firewalltest-untrusted --no-wait
 
 az group delete -n sfc-firewalltest-sandbox-rg --yes --no-wait
 watch 'az group list -o table | grep firewalltest'
@@ -15,30 +15,5 @@ watch 'az group list -o table | grep firewalltest'
 az group create -l westus3 -n sfc-firewalltest-sandbox-rg
 az deployment group create -c -g sfc-firewalltest-sandbox-rg -f firewall.json -p firewall.parameters.json -n firewalltest-12272019
 
-git switch master&&git merge development&&git push&&git push github&&git switch development$$gg -6
+git switch master&&git merge dev&&git push&&git push github&&git switch dev$$gg -6
 
-# Resource ID example
-
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "resources": [],
-  "outputs": {
-    "sameRGOutput": {
-      "type": "string",
-      "value": "[resourceId('Microsoft.Storage/storageAccounts','examplestorage')]"
-    },
-    "differentRGOutput": {
-      "type": "string",
-      "value": "[resourceId('otherResourceGroup', 'Microsoft.Storage/storageAccounts','examplestorage')]"
-    },
-    "differentSubOutput": {
-      "type": "string",
-      "value": "[resourceId('11111111-1111-1111-1111-111111111111', 'otherResourceGroup', 'Microsoft.Storage/storageAccounts','examplestorage')]"
-    },
-    "nestedResourceOutput": {
-      "type": "string",
-      "value": "[resourceId('Microsoft.SQL/servers/databases', 'serverName', 'databaseName')]"
-    }
-  }
-}

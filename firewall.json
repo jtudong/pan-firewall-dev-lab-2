@@ -342,63 +342,6 @@
                 "routes": [],
                 "disableBgpRoutePropagation": true
             }
-        },
-        {
-            "name": "subnetDeployment",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('mgmtPrefix'),'-',parameters('environment'),'-nsg'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('trustPrefix'),'-',parameters('environment'),'-nsg'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('untrustPrefix'),'-',parameters('environment'),'-nsg'))]",
-                "[resourceId('Microsoft.Network/routeTables', concat(parameters('subnetPrefix'),'-management-rt'))]",
-                "[resourceId('Microsoft.Network/routeTables', concat(parameters('subnetPrefix'),'-trusted-rt'))]",
-                "[resourceId('Microsoft.Network/routeTables', concat(parameters('subnetPrefix'),'-untrusted-rt'))]"
-            ],
-            "resourceGroup": "sfc-network-dev-rg",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Network/virtualNetworks/subnets",
-                            "apiVersion": "2020-11-01",
-                            "name": "[format('{0}/{1}', parameters('existingVNETName'), concat(variables('mgmtPrefix')))]",
-                            "properties": {
-                                "addressPrefix": "10.16.4.0/24"
-                            }
-                        },
-                        {
-                            "type": "Microsoft.Network/virtualNetworks/subnets",
-                            "apiVersion": "2020-11-01",
-                            "name": "[format('{0}/{1}', parameters('existingVNETName'), concat(variables('trustPrefix')))]",
-                            "dependsOn": [
-                            //    "[resourceId('sfc-network-dev-rg','Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', parameters('existingVNETName'), concat(variables('mgmtPrefix'))))]"
-                            "/subscriptions/67b03f65-308b-456f-b4a9-572c14a374cc/resourceGroups/sfc-network-dev-rg/providers/Microsoft.Network/virtualNetworks/sfc01-wu3-dev-vnet/subnets/firewalltest-management"
-                            ],
-                            "properties": {
-                                "addressPrefix": "10.16.3.0/24"
-                            }
-                        },
-                        {
-                            "type": "Microsoft.Network/virtualNetworks/subnets",
-                            "apiVersion": "2020-11-01",
-                            "name": "[format('{0}/{1}', parameters('existingVNETName'), concat(variables('untrustPrefix')))]",
-                            "dependsOn": [
-                            //    "[resourceId('sfc-network-dev-rg','Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', parameters('existingVNETName'), concat(variables('trustPrefix'))))]"
-                            "/subscriptions/67b03f65-308b-456f-b4a9-572c14a374cc/resourceGroups/sfc-network-dev-rg/providers/Microsoft.Network/virtualNetworks/sfc01-wu3-dev-vnet/subnets/firewalltest-trusted"
-                            ],
-                            "properties": {
-                                "addressPrefix": "10.16.2.0/24"
-                            }
-                        }
-                    ],
-                    "outputs": {}
-                }
-            }
         }
     ],
     "outputs": {}
