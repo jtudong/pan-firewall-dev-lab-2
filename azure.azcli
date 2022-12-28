@@ -16,3 +16,7 @@ az group create -l westus3 -n sfc-fwlab-sandbox-rg
 az deployment group create -c -g sfc-fwlab-sandbox-rg -f firewall.json -p firewall.parameters.json -n fwlab-
 
 git push github&&git switch master&&git merge dev&&git push&&git push github&&git switch dev
+
+# remove the licensing before deleting the firewall
+request license api-key set key 06df827b98388dab06357e6ac76624ee88d4efe2edb84840f3ba5a80b61194ac
+request license deactivate VM-Capacity mode auto
