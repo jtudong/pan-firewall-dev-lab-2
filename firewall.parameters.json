@@ -6,7 +6,7 @@
             "value": "sfcadmin"
         },
         "bootstrapFileShare": {
-            "value": "pan-firewall-dev-lab-2"
+            "value": "bootstrap"
         },
         "bootstrapStorageAccount": {
             "value": "sfc01ccoesa"
