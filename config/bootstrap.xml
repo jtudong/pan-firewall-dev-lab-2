@@ -11,7 +11,7 @@
         </permissions>
       </entry>
       <entry name="sfcadmin">
-        <phash>$5$bmovqhwn$dYgTuvLnndOuZJ6dg7vcg1L2XaNbS5kpX9hBiRKXiq6</phash>
+        <phash>$5$wrldobcn$1UioDjY8ESaNxUx6xwSwBQ45/TyyfvvwV0vtuAE9yJ8</phash>
         <permissions>
           <role-based>
             <superuser>yes</superuser>
@@ -346,13 +346,7 @@ ieWrLBa2guUiv9zauvkf1jAdsyjcn9wFMlW1FxCjqUL35SSS
         </entry>
       </saml-idp>
     </server-profile>
-    <content-preview>
-      <application/>
-      <application-type>
-        <category/>
-        <technology/>
-      </application-type>
-    </content-preview>
+    <content-preview/>
   </shared>
   <devices>
     <entry name="localhost.localdomain">
@@ -1070,6 +1064,7 @@ ieWrLBa2guUiv9zauvkf1jAdsyjcn9wFMlW1FxCjqUL35SSS
                     <member>any</member>
                   </category>
                   <application>
+                    <member>apt-get</member>
                     <member>dns</member>
                     <member>ntp</member>
                     <member>ping</member>
@@ -1224,7 +1219,7 @@ ieWrLBa2guUiv9zauvkf1jAdsyjcn9wFMlW1FxCjqUL35SSS
                 <entry name="Destination NAT for aw3lfwtest01" uuid="862fea69-f2ab-4368-9ac1-c5391d1b942e">
                   <destination-translation>
                     <translated-port>22</translated-port>
-                    <translated-address>10.18.4.10</translated-address>
+                    <translated-address>10.18.3.10</translated-address>
                   </destination-translation>
                   <to>
                     <member>Untrust</member>

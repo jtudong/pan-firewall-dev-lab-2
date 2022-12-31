@@ -13,6 +13,7 @@ az group delete -n sfc-fwlab-sandbox-rg --yes --no-wait
 watch 'az group list -o table | grep fwlab'
 
 az group create -l westus3 -n sfc-fwlab-sandbox-rg
+az deployment group validate -g sfc-fwlab-sandbox-rg -f firewall.json -p firewall.parameters.json
 az deployment group create -c -g sfc-fwlab-sandbox-rg -f firewall.json -p firewall.parameters.json -n fwlab-
 
 git push github&&git switch master&&git merge dev&&git push&&git push github&&git switch dev
